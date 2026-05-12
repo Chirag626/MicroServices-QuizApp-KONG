@@ -8,7 +8,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(value = "QUESTION-SERVICE",path = "/question")
+@FeignClient(
+    name = "question-service",
+    url = "http://question-service:8080",
+    path = "/question"
+)
 public interface QuizFeignClient
 {
     // Get random questions for quiz creation

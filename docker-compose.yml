@@ -1,25 +1,5 @@
 services:
 
-  # =========================
-  # # Eureka Server 
-  # # =========================
-  # service-registry:
-  #   build:
-  #     context: .
-  #     dockerfile: service-registry/Dockerfile
-  #   container_name: service-registry
-  #   ports:
-  #     - "8761:8761"
-  #   networks:
-  #     - microservices-network
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "wget -qO- http://localhost:8761/actuator/health || exit 1"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 10
-  #     start_period: 30s
-
-
   # ==========================
   # Kong Database (PostgreSQL)
   # ==========================
@@ -44,7 +24,7 @@ services:
 
 
   # =========================
-  # Kong Migrations (NEW)
+  # Kong Migrations
   # =========================
   kong-migrations:
     image: kong:3.4
@@ -60,6 +40,7 @@ services:
         condition: service_healthy
     networks:
       - microservices-network
+    restart: on-failure
 
 
   # =========================
@@ -80,7 +61,7 @@ services:
       KONG_ADMIN_ERROR_LOG: /dev/stderr
       KONG_ADMIN_LISTEN: 0.0.0.0:8001
       KONG_ADMIN_GUI_LISTEN: 0.0.0.0:8002
-      # KONG_ADMIN_GUI_URL: http://localhost:8002
+      KONG_ADMIN_GUI_URL: http://localhost:8002
     ports:
       - "8000:8000"
       - "8001:8001"
@@ -88,8 +69,6 @@ services:
     depends_on:
       kong-migrations:
         condition: service_completed_successfully
-      service-registry:
-        condition: service_healthy
     networks:
       - microservices-network
     healthcheck:
@@ -114,8 +93,6 @@ services:
       - SPRING_DATASOURCE_USERNAME=${QUESTION_DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${QUESTION_DB_PASSWORD}
     depends_on:
-      service-registry:
-        condition: service_healthy
       postgres-question:
         condition: service_started
     networks:
@@ -137,13 +114,10 @@ services:
       - SPRING_DATASOURCE_USERNAME=${QUIZ_DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${QUIZ_DB_PASSWORD}
     depends_on:
-      service-registry:
-        condition: service_healthy
       postgres-quiz:
         condition: service_started
     networks:
       - microservices-network
-
 
 
   # =========================
@@ -158,6 +132,7 @@ services:
       - "8181:8181"
     networks:
       - microservices-network
+
 
   # =========================
   # Postgres (Question)
@@ -193,6 +168,7 @@ services:
 
 networks:
   microservices-network:
+    driver: bridge
 
 volumes:
   kong-db-data:
