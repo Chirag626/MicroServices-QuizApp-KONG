@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- ✅ CONNECT WITH YOUR PARENT -->
+	<parent>
+		<groupId>com.project</groupId>
+		<artifactId>microservices-parent</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
+	<artifactId>api-gateway</artifactId>
+
+	<dependencies>
+
+		<!-- ✅ CORRECT GATEWAY -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-gateway</artifactId>
+		</dependency>
+
+		<!-- Eureka -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- Required for jar -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
